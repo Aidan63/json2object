@@ -42,9 +42,43 @@ typedef Definitions = Map<String, JsonType>;
 
 class DataBuilder {
 
-	static var BOOL = Context.getType("Bool");
-	static var FLOAT = Context.getType("Float");
-	static var STRING = Context.getType("String");
+	@:persistent
+	static var cachedBool:Type = null;
+	@:persistent
+	static var cachedFloat:Type = null;
+	@:persistent
+	static var cachedString:Type = null;
+
+	static var BOOL(get, never):Type;
+	static var FLOAT(get, never):Type;
+	static var STRING(get, never):Type;
+
+	static function get_BOOL() {
+		return switch cachedBool {
+			case null:
+				cachedBool = Context.getType("Bool");
+			case cached:
+				cached;
+		}
+	}
+
+	static function get_FLOAT() {
+		return switch cachedFloat {
+			case null:
+				cachedFloat = Context.getType("Float");
+			case cached:
+				cached;
+		}
+	}
+
+	static function get_STRING() {
+		return switch cachedString {
+			case null:
+				cachedString = Context.getType("String");
+			case cached:
+				cached;
+		}
+	}
 
 	@:persistent
 	private static var writers = new Map<String, Bool>();
