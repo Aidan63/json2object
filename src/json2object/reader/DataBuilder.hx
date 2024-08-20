@@ -44,10 +44,6 @@ class DataBuilder {
 	private static var callPosition:Null<Position> = null;
 	private static var jcustom = ":jcustomparse";
 
-	static function isAlive(ct:ComplexType, pos:Position):Type {
-		return try Context.resolveType(ct, pos) catch(e) null;
-	}
-
 	private static function notNull(type:Type):Type {
 		return switch (type) {
 			case TAbstract(_.get()=>t, p):
@@ -942,7 +938,7 @@ class DataBuilder {
 		var parser_cls = { name: parserName, pack: [], params: null, sub: null };
 
 		if (parsers.exists(parserName)) {
-			var resolved = isAlive(TPath(parser_cls), Context.currentPos());
+			var resolved = TypeUtils.isAlive(TPath(parser_cls), Context.currentPos());
 			if (resolved != null) {
 				return resolved;
 			}

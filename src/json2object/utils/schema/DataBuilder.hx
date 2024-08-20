@@ -46,8 +46,8 @@ class DataBuilder {
 	static var FLOAT = Context.getType("Float");
 	static var STRING = Context.getType("String");
 
-	static var counter:Int = 0;
-	private static var writers = new Map<String, Type>();
+	@:persistent
+	private static var writers = new Map<String, Bool>();
 
 	private inline static function describe (type:JsonType, descr:Null<String>) {
 		return (descr == null) ? type : JTWithDescr(type, descr);
@@ -413,7 +413,17 @@ class DataBuilder {
 	}
 
 	static function makeSchemaWriter(c:BaseType, type:Type, parsingType:ParsingType) {
-		var swriterName = c.name + "_" + (counter++);
+		trace(Std.string(parsingType));
+
+		var swriterName = c.name + "_" + haxe.crypto.Md5.encode(type.toString() + Std.string(parsingType));
+		var swriter_cls = { name: swriterName, pack: [], params: null, sub: null };
+
+		if (writers.exists(swriterName)) {
+			var resolved = TypeUtils.isAlive(TPath(swriter_cls), Context.currentPos());
+			if (resolved != null) {
+				return resolved;
+			}
+		}
 
 		var definitions = new Definitions();
 		var obj = format(makeSchema(type, definitions), definitions, parsingType);
@@ -436,8 +446,9 @@ class DataBuilder {
 		}
 		haxe.macro.Context.defineType(schemaWriter);
 
-		var constructedType = haxe.macro.Context.getType(swriterName);
-		return haxe.macro.Context.getType(swriterName);
+		writers.set(swriterName, true);
+
+		return Context.resolveType(TPath(swriter_cls), Context.currentPos());
 	}
 
 	public static function build() {
