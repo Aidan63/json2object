@@ -413,8 +413,6 @@ class DataBuilder {
 	}
 
 	static function makeSchemaWriter(c:BaseType, type:Type, parsingType:ParsingType) {
-		trace(Std.string(parsingType));
-
 		var swriterName = c.name + "_" + haxe.crypto.Md5.encode(type.toString() + Std.string(parsingType));
 		var swriter_cls = { name: swriterName, pack: [], params: null, sub: null };
 
