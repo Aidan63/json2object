@@ -42,11 +42,8 @@ typedef Definitions = Map<String, JsonType>;
 
 class DataBuilder {
 
-	@:persistent
 	static var cachedBool:Type = null;
-	@:persistent
 	static var cachedFloat:Type = null;
-	@:persistent
 	static var cachedString:Type = null;
 
 	static var BOOL(get, never):Type;
